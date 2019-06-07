@@ -2,11 +2,11 @@
 
 Count everytime you lose focus. See who are losing focus.
 
-# Why Mess?
+# Why?
 
-Starts as a curiority and need to know the answer and we decided to make an App for that. it can show who are the most interrupted person in our team.
+Started as a curiority to know the most interrupted person in our team and we decided to make an App for that.
 
-Mess will help us analyze what is causing too much interruption.
+Mess will help us analyze what is causing too much caos.
 
 
 Made with Flutter 💙
