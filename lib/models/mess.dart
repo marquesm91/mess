@@ -18,7 +18,8 @@ class Mess {
       : description = mapData["description"],
         userId = mapData["userId"],
         groupId = mapData["groupId"],
-        date = mapData["date"];
+        date =
+            DateTime.fromMillisecondsSinceEpoch(mapData['date'].seconds * 1000);
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
