@@ -3,26 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-const GITHUB_CLIENT_ID = "92bb26bc5992be389e45";
-const GITHUB_CLIENT_SECRET = "4f419a1619420da3847a5921553403228e1d4c9a";
-
-void openGithubAuth() async {
-  const String url = "https://github.com/login/oauth/authorize" +
-      "?client_id=" +
-      GITHUB_CLIENT_ID +
-      "&scope=read:user%20user:email";
-
-  if (await canLaunch(url)) {
-    await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-    );
-  } else {
-    print('cannot launch url');
-  }
-}
+import 'package:mess/utils/constants.dart';
+import 'package:mess/models/user.dart';
+import 'package:mess/models/github_login_request.dart';
+import 'package:mess/models/github_login_response.dart';
 
 abstract class BaseAuth {
   Future<String> signInWithEmailAndPassword({String email, String password});
@@ -60,8 +44,8 @@ class Auth implements BaseAuth {
         "Accept": "application/json"
       },
       body: jsonEncode(GitHubLoginRequest(
-        clientId: GITHUB_CLIENT_ID,
-        clientSecret: GITHUB_CLIENT_SECRET,
+        clientId: Constants.githubClientId,
+        clientSecret: Constants.githubClientSecret,
         code: code,
       )),
     );
@@ -76,7 +60,11 @@ class Auth implements BaseAuth {
     final FirebaseUser user =
         await FirebaseAuth.instance.signInWithCredential(credential);
 
-    return User(displayName: user.displayName, photoUrl: user.photoUrl);
+    return User(
+      userId: user.uid,
+      displayName: user.displayName,
+      photoUrl: user.photoUrl,
+    );
   }
 
   Future<User> currentUser() async {
@@ -86,7 +74,11 @@ class Auth implements BaseAuth {
       return null;
     }
 
-    return User(displayName: user.displayName, photoUrl: user.photoUrl);
+    return User(
+      userId: user.uid,
+      displayName: user.displayName,
+      photoUrl: user.photoUrl,
+    );
   }
 
   Future<void> signOut() {
@@ -94,43 +86,19 @@ class Auth implements BaseAuth {
   }
 }
 
-class User {
-  String displayName;
-  String photoUrl;
+void openGithubAuth() async {
+  const String url = "https://github.com/login/oauth/authorize" +
+      "?client_id=" +
+      Constants.githubClientId +
+      "&scope=read:user%20user:email";
 
-  User({this.displayName, this.photoUrl});
-}
-
-enum AuthStatus {
-  notSignedIn,
-  signedIn,
-}
-
-class GitHubLoginRequest {
-  String clientId;
-  String clientSecret;
-  String code;
-
-  GitHubLoginRequest({this.clientId, this.clientSecret, this.code});
-
-  dynamic toJson() => {
-        "client_id": clientId,
-        "client_secret": clientSecret,
-        "code": code,
-      };
-}
-
-class GitHubLoginResponse {
-  String accessToken;
-  String tokenType;
-  String scope;
-
-  GitHubLoginResponse({this.accessToken, this.tokenType, this.scope});
-
-  factory GitHubLoginResponse.fromJson(Map<String, dynamic> json) =>
-      GitHubLoginResponse(
-        accessToken: json["access_token"],
-        tokenType: json["token_type"],
-        scope: json["scope"],
-      );
+  if (await canLaunch(url)) {
+    await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+    );
+  } else {
+    print('cannot launch url');
+  }
 }

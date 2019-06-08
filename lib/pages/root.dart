@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mess/services/auth.dart';
+import 'package:mess/models/auth_status.dart';
 import 'package:mess/pages/home.dart';
 import 'package:mess/pages/login.dart';
 

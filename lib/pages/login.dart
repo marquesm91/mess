@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:mess/services/auth.dart';
+import 'package:mess/models/user.dart';
 import 'package:mess/utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
