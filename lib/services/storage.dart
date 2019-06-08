@@ -4,6 +4,7 @@ import 'package:mess/models/mess.dart';
 
 abstract class BaseStorage {
   Future<Mess> createMess({String userId});
+  Stream<QuerySnapshot> getAllMess({int offset, int limit});
 }
 
 class Storage implements BaseStorage {
@@ -26,5 +27,19 @@ class Storage implements BaseStorage {
     await _db.runTransaction(createMessTransaction);
 
     return mess;
+  }
+
+  Stream<QuerySnapshot> getAllMess({int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots = _db.collection('mess').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mess/pages/user_detail.dart';
 import 'package:mess/services/auth.dart';
 import 'package:mess/services/storage.dart';
 import 'package:mess/utils/colors.dart';
@@ -99,32 +100,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        padding: EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 75.0,
-              backgroundImage: NetworkImage(_user.photoUrl),
-              backgroundColor: Colors.transparent,
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 15),
-              child: Text(
-                '${_user.displayName}',
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: UserDetail(user: _user, storage: _storage),
       floatingActionButton: FloatingActionButton(
         onPressed: _onClicked,
         backgroundColor: BaseColors.primaryBlack,
