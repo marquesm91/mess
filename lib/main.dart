@@ -4,25 +4,25 @@ import 'package:mess/services/auth.dart';
 import 'dart:async';
 import 'package:uni_links/uni_links.dart';
 
+const PrimaryBlack = Color(0xff2b2b2b);
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mess',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page!'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -73,23 +73,55 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.white,
+        padding: const EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Sign in',
+          children: [
+            Container(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: Image.asset(
+                'assets/mess-logo.png',
+                height: 250,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Container(
+              child: githubSignInButton(),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: signInWithGithub,
-        tooltip: 'Sign in with Github',
-        child: Icon(Icons.add),
+    );
+  }
+
+  Widget githubSignInButton() {
+    return RaisedButton(
+      onPressed: signInWithGithub,
+      color: Colors.black,
+      highlightColor: PrimaryBlack,
+      splashColor: Colors.white30,
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(right: 10),
+            child: Image.asset(
+              'assets/github-logo.png',
+              height: 22,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Text(
+            'Entrar com Github',
+            style: TextStyle(fontSize: 22, color: Colors.white),
+          ),
+        ],
       ),
     );
   }
