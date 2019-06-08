@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mess/services/auth.dart';
+import 'package:mess/services/storage.dart';
+import 'package:mess/utils/colors.dart';
+import 'package:mess/models/user.dart';
+import 'package:mess/models/mess.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({this.auth, this.onSignedOut});
@@ -13,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   User _user;
+  BaseStorage _storage = Storage();
 
   @override
   void initState() {
@@ -31,6 +36,18 @@ class _HomePageState extends State<HomePage> {
       widget.onSignedOut();
     } catch (error) {
       print('Error $error');
+    }
+  }
+
+  void _onClicked() async {
+    try {
+      Mess mess = await _storage.createMess(userId: _user.userId);
+      print('mess created: ${mess.description}');
+      print('mess created: ${mess.userId}');
+      print('mess created: ${mess.groupId}');
+      print('mess created: ${mess.date}');
+    } catch (error) {
+      print('Error: $error');
     }
   }
 
@@ -107,6 +124,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onClicked,
+        backgroundColor: BaseColors.primaryBlack,
+        child: Icon(Icons.timer),
       ),
     );
   }
