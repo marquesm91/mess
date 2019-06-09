@@ -66,16 +66,18 @@ class _RankPageState extends State<RankPage> {
       appBar: AppBar(
         title: Text('Rank'),
         actions: [
-          FlatButton(
-            child: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 17.0,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: _signOut,
-          )
+          // FIXME: add this again when multiple user creation is resolved
+          // https://github.com/marquesm91/mess/issues/21
+          // FlatButton(
+          //   child: Text(
+          //     'Logout',
+          //     style: TextStyle(
+          //       fontSize: 17.0,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          //   onPressed: _signOut,
+          // )
         ],
       ),
       body: _user == null
@@ -149,10 +151,13 @@ class _RankPageState extends State<RankPage> {
                   },
                 );
               }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onClicked,
-        backgroundColor: BaseColors.primaryBlack,
-        child: Icon(Icons.timer),
+      floatingActionButton: Theme(
+        data: Theme.of(context).copyWith(highlightColor: Colors.grey),
+        child: FloatingActionButton(
+          onPressed: _onClicked,
+          backgroundColor: BaseColors.primaryBlack,
+          child: Icon(Icons.timer),
+        ),
       ),
     );
   }
