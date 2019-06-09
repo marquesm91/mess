@@ -78,7 +78,9 @@ class _HomePageState extends State<HomePage> {
           width: double.infinity,
           height: double.infinity,
           child: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+            ),
           ),
         ),
       );
