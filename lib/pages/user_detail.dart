@@ -36,7 +36,7 @@ class _UserDetailState extends State<UserDetail> {
           .toList();
 
       setState(() {
-        this._messes = messes.toList();
+        _messes = messes.toList();
       });
     });
   }
@@ -49,45 +49,32 @@ class _UserDetailState extends State<UserDetail> {
   }
 
   Widget build(BuildContext context) {
+    print('${_messes?.length}');
     return Scaffold(
       appBar: AppBar(
         title: Text("User Detail"),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        child: Container(
-          child: ListView.builder(
-            itemCount: _messes.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (index == 0) {
-                return listHeader();
-              }
+      body: ListView.builder(
+        itemCount: _messes?.length,
+        itemBuilder: (BuildContext context, int index) {
+          Mess messItem = _messes[index];
 
-              return ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      DateFormat("kk:mm - dd/MM/yyyy")
-                          .format(_messes[index].date),
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+          if (index == 0) {
+            return Column(
+              children: [
+                buildListHeader(),
+                buildMessItem(messItem),
+              ],
+            );
+          }
+
+          return buildMessItem(messItem);
+        },
       ),
     );
   }
 
-  Widget listHeader() {
+  Widget buildListHeader() {
     return Container(
       padding: EdgeInsets.all(15),
       decoration: new BoxDecoration(
@@ -114,6 +101,23 @@ class _UserDetailState extends State<UserDetail> {
                 fontSize: 22.0,
                 fontWeight: FontWeight.w500,
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildMessItem(messItem) {
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            DateFormat("kk:mm - dd/MM/yyyy").format(messItem.date),
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
             ),
           ),
         ],
