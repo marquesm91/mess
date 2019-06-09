@@ -1,0 +1,4 @@
+enum AuthStatus {
+  notSignedIn,
+  signedIn,
+}
