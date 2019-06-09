@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mess/models/mess.dart';
+import 'package:mess/models/user.dart';
 
 abstract class BaseStorage {
   Future<Mess> createMess({String userId});
+  Stream<QuerySnapshot> getAllUsers({int offset, int limit});
   Stream<QuerySnapshot> getAllMess({int offset, int limit});
+  Stream<QuerySnapshot> getAllMessByUserId(
+      {String userId, int offset, int limit});
+  Future<void> saveUser({User user});
 }
 
 class Storage implements BaseStorage {
@@ -29,8 +34,53 @@ class Storage implements BaseStorage {
     return mess;
   }
 
+  Future<void> saveUser({User user}) async {
+    final TransactionHandler createUserTransaction = (Transaction tx) async {
+      final DocumentSnapshot ds =
+          await tx.get(_db.collection('users').document());
+
+      var dataMap = user.toMap();
+
+      await tx.set(ds.reference, dataMap);
+
+      return dataMap;
+    };
+
+    await _db.runTransaction(createUserTransaction);
+  }
+
+  Stream<QuerySnapshot> getAllUsers({int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots = _db.collection('users').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
+  }
+
   Stream<QuerySnapshot> getAllMess({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots = _db.collection('mess').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
+  }
+
+  Stream<QuerySnapshot> getAllMessByUserId(
+      {String userId, int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots =
+        _db.collection('mess').where('userId', isEqualTo: userId).snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);

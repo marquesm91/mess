@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:mess/services/auth.dart';
+import 'package:mess/services/storage.dart';
 import 'package:mess/models/user.dart';
 import 'package:mess/utils/colors.dart';
 
@@ -17,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   StreamSubscription _subs;
+  BaseStorage _storage = Storage();
 
   @override
   void initState() {
@@ -49,13 +51,11 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         User user = await widget.auth.signInWithGithub(code);
-
-        print("displayName: ${user.displayName}");
-        print("photoUrl: ${user.photoUrl}");
+        await _storage.saveUser(user: user);
 
         widget.onSignedIn();
       } catch (error) {
-        print("LOGIN ERROR: $error");
+        print("Login error: $error");
       }
     }
   }

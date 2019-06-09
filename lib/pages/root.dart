@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mess/services/auth.dart';
 import 'package:mess/models/auth_status.dart';
-import 'package:mess/pages/home.dart';
+import 'package:mess/pages/rank.dart';
 import 'package:mess/pages/login.dart';
 
 class RootPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _RootPageState extends State<RootPage> {
           onSignedIn: _signedIn,
         );
       case AuthStatus.signedIn:
-        return HomePage(
+        return RankPage(
           auth: widget.auth,
           onSignedOut: _signedOut,
         );
