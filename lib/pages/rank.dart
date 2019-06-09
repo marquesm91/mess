@@ -7,17 +7,17 @@ import 'package:mess/utils/colors.dart';
 import 'package:mess/models/user.dart';
 import 'package:mess/models/mess.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({this.auth, this.onSignedOut});
+class RankPage extends StatefulWidget {
+  RankPage({this.auth, this.onSignedOut});
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
 
   @override
-  State<StatefulWidget> createState() => new _HomePageState();
+  State<StatefulWidget> createState() => new _RankPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _RankPageState extends State<RankPage> {
   User _user;
   BaseStorage _storage = Storage();
 
