@@ -49,12 +49,12 @@ class _RankPageState extends State<RankPage> {
     }
   }
 
-  void _onUserTapped() {
+  void _onUserTapped(user) {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => UserDetail(
-                user: _user,
+                user: user,
                 storage: _storage,
               )),
     );
@@ -86,7 +86,7 @@ class _RankPageState extends State<RankPage> {
                   AsyncSnapshot<QuerySnapshot> messSnapshot) {
                 Map<String, List<Mess>> allMess = Map<String, List<Mess>>();
 
-                messSnapshot.data.documents?.forEach((messRecord) {
+                messSnapshot.data?.documents?.forEach((messRecord) {
                   Mess mess = Mess.fromMap(messRecord.data);
 
                   if (allMess[mess.userId] == null) {
@@ -104,16 +104,24 @@ class _RankPageState extends State<RankPage> {
                       return loadingContainer();
                     }
 
-                    final int messageCount =
-                        usersSnapshot.data.documents.length;
+                    List<User> users = List();
+
+                    usersSnapshot.data?.documents?.forEach((userRecord) {
+                      User user = User.fromMap(userRecord.data);
+
+                      if (allMess[user.userId] != null) {
+                        users.add(user);
+                      }
+                    });
+
+                    users.sort((a, b) => allMess[b.userId]
+                        .length
+                        .compareTo(allMess[a.userId].length));
 
                     return ListView.builder(
-                      itemCount: messageCount,
+                      itemCount: users?.length,
                       itemBuilder: (_, int index) {
-                        final DocumentSnapshot document =
-                            usersSnapshot.data.documents[index];
-
-                        User user = User.fromMap(document.data);
+                        User user = users[index];
 
                         return ListTile(
                           leading: CircleAvatar(
@@ -134,7 +142,7 @@ class _RankPageState extends State<RankPage> {
                             ],
                           ),
                           trailing: Icon(Icons.keyboard_arrow_right),
-                          onTap: _onUserTapped,
+                          onTap: () => _onUserTapped(user),
                         );
                       },
                     );
