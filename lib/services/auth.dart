@@ -99,6 +99,6 @@ void openGithubAuth() async {
       forceWebView: false,
     );
   } else {
-    print('cannot launch url');
+    print('Cannot launch url');
   }
 }
