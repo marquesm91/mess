@@ -49,7 +49,6 @@ class _UserDetailState extends State<UserDetail> {
   }
 
   Widget build(BuildContext context) {
-    print('${_messes?.length}');
     return Scaffold(
       appBar: AppBar(
         title: Text("User Detail"),
