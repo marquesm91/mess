@@ -111,9 +111,12 @@ class _RankPageState extends State<RankPage> {
                     usersSnapshot.data?.documents?.forEach((userRecord) {
                       User user = User.fromMap(userRecord.data);
 
-                      if (allMess[user.userId] != null) {
-                        users.add(user);
+                      // condition for uses with 0 mess
+                      if (allMess[user.userId] == null) {
+                        allMess[user.userId] = new List<Mess>();
                       }
+
+                      users.add(user);
                     });
 
                     users.sort((a, b) => allMess[b.userId]
