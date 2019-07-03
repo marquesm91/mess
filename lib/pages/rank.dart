@@ -68,16 +68,16 @@ class _RankPageState extends State<RankPage> {
         actions: [
           // FIXME: add this again when multiple user creation is resolved
           // https://github.com/marquesm91/mess/issues/21
-          // FlatButton(
-          //   child: Text(
-          //     'Logout',
-          //     style: TextStyle(
-          //       fontSize: 17.0,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          //   onPressed: _signOut,
-          // )
+          FlatButton(
+            child: Text(
+              'Logout',
+              style: TextStyle(
+                fontSize: 17.0,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: _signOut,
+          )
         ],
       ),
       body: _user == null
