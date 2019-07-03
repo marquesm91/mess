@@ -5,6 +5,7 @@ import 'package:mess/models/user.dart';
 
 abstract class BaseStorage {
   Future<Mess> createMess({String userId});
+  Future<bool> isRegisteredUser({User user});
   Stream<QuerySnapshot> getAllUsers({int offset, int limit});
   Stream<QuerySnapshot> getAllMess({int offset, int limit});
   Stream<QuerySnapshot> getAllMessByUserId(
@@ -36,17 +37,30 @@ class Storage implements BaseStorage {
 
   Future<void> saveUser({User user}) async {
     final TransactionHandler createUserTransaction = (Transaction tx) async {
-      final DocumentSnapshot ds =
-          await tx.get(_db.collection('users').document());
+      bool isRegistered = await this.isRegisteredUser(user: user);
 
-      var dataMap = user.toMap();
+      if (!isRegistered) {
+        final DocumentSnapshot ds =
+            await tx.get(_db.collection('users').document());
 
-      await tx.set(ds.reference, dataMap);
+        var dataMap = user.toMap();
 
-      return dataMap;
+        await tx.set(ds.reference, dataMap);
+
+        return dataMap;
+      }
     };
 
     await _db.runTransaction(createUserTransaction);
+  }
+
+  Future<bool> isRegisteredUser({User user}) async {
+    QuerySnapshot snapshots = await _db
+        .collection('users')
+        .where('userId', isEqualTo: user.userId)
+        .getDocuments();
+
+    return snapshots.documents.isNotEmpty;
   }
 
   Stream<QuerySnapshot> getAllUsers({int offset, int limit}) {
