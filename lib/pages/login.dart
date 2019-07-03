@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:mess/services/auth.dart';
 import 'package:mess/services/storage.dart';
 import 'package:mess/models/user.dart';
-import 'package:mess/utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth, this.onSignedIn});
@@ -17,46 +14,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  StreamSubscription _subs;
   BaseStorage _storage = Storage();
 
-  @override
-  void initState() {
-    _initDeepLinkListener();
-    super.initState();
-  }
+  void _onClickSignIn() async {
+    try {
+      User user = await widget.auth.signInWithGoogle();
+      await _storage.saveUser(user: user);
 
-  @override
-  void dispose() {
-    _disposeDeepLinkListener();
-    super.dispose();
-  }
-
-  void _initDeepLinkListener() async {
-    _subs = getLinksStream().listen((String link) {
-      _checkDeepLink(link);
-    }, cancelOnError: true);
-  }
-
-  void _disposeDeepLinkListener() {
-    if (_subs != null) {
-      _subs.cancel();
-      _subs = null;
-    }
-  }
-
-  void _checkDeepLink(String link) async {
-    if (link != null) {
-      String code = link.substring(link.indexOf(RegExp('code=')) + 5);
-
-      try {
-        User user = await widget.auth.signInWithGithub(code);
-        await _storage.saveUser(user: user);
-
-        widget.onSignedIn();
-      } catch (error) {
-        print("Login error: $error");
-      }
+      widget.onSignedIn();
+    } catch (error) {
+      print("Login error: $error");
     }
   }
 
@@ -92,32 +59,38 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget githubSignInButton() {
-    return RaisedButton(
-      onPressed: openGithubAuth,
-      color: Colors.black,
-      highlightColor: BaseColors.primaryBlack,
-      splashColor: Colors.white30,
-      padding: EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.only(right: 10),
-            child: Image.asset(
-              'assets/github-logo.png',
-              height: 22,
-              fit: BoxFit.cover,
+    return ButtonTheme(
+      height: 40.0,
+      child: RaisedButton(
+        onPressed: _onClickSignIn,
+        color: Colors.white,
+        // highlightColor: Colors.black54,
+        // highlightElevation: 2.0,
+        // splashColor: Colors.black54,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.only(right: 24),
+              child: Image.asset(
+                'assets/google-logo.png',
+                height: 20,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Text(
-            'Entrar com Github',
-            style: TextStyle(
-              fontSize: 22,
-              color: Colors.white,
+            Text(
+              'Entrar com o Google',
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w500,
+                color: Color.fromRGBO(0, 0, 0, 0.54),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

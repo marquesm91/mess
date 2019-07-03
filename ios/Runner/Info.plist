@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1033300477246-p74k255c9cn767uk83hv0t9en0q3pdv4</string>
+				<string>com.googleusercontent.apps.430107389653-s4mfk7j6prekg1qpiibci4f55lpd3euj</string>
 			</array>
 		</dict>
 		<dict>
@@ -45,6 +45,8 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<string>YES</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>

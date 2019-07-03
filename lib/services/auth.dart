@@ -1,24 +1,20 @@
-import 'package:url_launcher/url_launcher.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:mess/utils/constants.dart';
 import 'package:mess/models/user.dart';
-import 'package:mess/models/github_login_request.dart';
-import 'package:mess/models/github_login_response.dart';
 
 abstract class BaseAuth {
   Future<String> signInWithEmailAndPassword({String email, String password});
   Future<String> createUserWithEmailAndPassword(
       {String email, String password});
-  Future<User> signInWithGithub(String code);
+  Future<User> signInWithGoogle();
   Future<User> currentUser();
   Future<void> signOut();
 }
 
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
   Future<String> signInWithEmailAndPassword(
       {String email, String password}) async {
@@ -36,29 +32,19 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
-  Future<User> signInWithGithub(String code) async {
-    final response = await http.post(
-      "https://github.com/login/oauth/access_token",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: jsonEncode(GitHubLoginRequest(
-        clientId: Constants.githubClientId,
-        clientSecret: Constants.githubClientSecret,
-        code: code,
-      )),
+  Future<User> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
 
-    GitHubLoginResponse loginResponse =
-        GitHubLoginResponse.fromJson(json.decode(response.body));
-
-    final AuthCredential credential = GithubAuthProvider.getCredential(
-      token: loginResponse.accessToken,
-    );
-
-    final FirebaseUser user =
-        await FirebaseAuth.instance.signInWithCredential(credential);
+    FirebaseUser user = await _firebaseAuth.signInWithCredential(credential);
 
     return User(
       userId: user.uid,
@@ -83,22 +69,5 @@ class Auth implements BaseAuth {
 
   Future<void> signOut() {
     return _firebaseAuth.signOut();
-  }
-}
-
-void openGithubAuth() async {
-  const String url = "https://github.com/login/oauth/authorize" +
-      "?client_id=" +
-      Constants.githubClientId +
-      "&scope=read:user%20user:email";
-
-  if (await canLaunch(url)) {
-    await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-    );
-  } else {
-    print('Cannot launch url');
   }
 }
